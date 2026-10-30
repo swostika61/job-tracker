@@ -8,7 +8,9 @@
 export default function DemoShowcase() {
   return (
     <div>
+      {/* Frame the recording like an application window to match the demo context. */}
       <div className="overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-neutral-200">
+        {/* Decorative browser controls and demo path shown above the recording. */}
         <div className="flex items-center gap-2 border-b border-neutral-100 px-4 py-2.5">
           <span className="h-3 w-3 rounded-full bg-rose-400" />
           <span className="h-3 w-3 rounded-full bg-amber-400" />
@@ -17,6 +19,7 @@ export default function DemoShowcase() {
             job-hunt-tracker / demo
           </span>
         </div>
+        {/* The video loops silently so visitors can preview the main workflow. */}
         <video
           className="block aspect-[8/5] w-full bg-indigo-50"
           src="/demo.webm"
@@ -28,6 +31,7 @@ export default function DemoShowcase() {
           controls
         />
       </div>
+      {/* Summarize the actions demonstrated in the recording. */}
       <p className="mt-4 text-center text-sm font-medium text-indigo-700">
         Sign up, add, edit, move and delete, a real recording of the app
       </p>

@@ -24,6 +24,7 @@ interface ApplicationFormProps {
 }
 
 function today(): string {
+  // Return the current date in the format expected by an HTML date input.
   return new Date().toISOString().slice(0, 10);
 }
 
@@ -38,6 +39,8 @@ export default function ApplicationForm({
   onSubmit,
   onCancel,
 }: ApplicationFormProps) {
+  // Initialize fields from the existing application when editing, or blank
+  // values when creating a new application.
   const [company, setCompany] = useState(initial?.company ?? "");
   const [role, setRole] = useState(initial?.role ?? "");
   const [dateApplied, setDateApplied] = useState(initial?.dateApplied ?? "");
@@ -51,8 +54,12 @@ export default function ApplicationForm({
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    // Do not submit incomplete required fields, even if this handler is called
+    // programmatically instead of through the browser's native validation.
     if (!company.trim() || !role.trim()) return;
 
+    // Normalize text before passing the form values to the parent component.
     onSubmit({
       company: company.trim(),
       role: role.trim(),
@@ -60,6 +67,7 @@ export default function ApplicationForm({
       jobLink: jobLink.trim(),
     });
 
+    // Clear only add-mode forms; edit-mode forms keep their values until closed.
     if (!initial) {
       setCompany("");
       setRole("");
@@ -73,8 +81,10 @@ export default function ApplicationForm({
       onSubmit={handleSubmit}
       className="rounded-xl bg-white p-4 shadow-sm sm:p-5"
     >
+      {/* The heading is optional because edit forms are already inside a card. */}
       {heading && <h2 className="text-base font-semibold">{heading}</h2>}
       <div
+        // Stack fields in compact edit mode and use columns for the add form.
         className={`${stacked ? "grid gap-3" : "grid gap-3 sm:grid-cols-2 lg:grid-cols-4"} ${heading ? "mt-3" : ""}`}
       >
         <label className="block">
@@ -126,12 +136,14 @@ export default function ApplicationForm({
         </label>
       </div>
       <div className="mt-4 flex gap-2">
+        {/* The label changes between add and edit flows. */}
         <button
           type="submit"
           className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
         >
           {submitLabel}
         </button>
+        {/* Edit forms may provide cancellation; add forms do not need it. */}
         {onCancel && (
           <button
             type="button"

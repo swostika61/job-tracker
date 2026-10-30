@@ -13,6 +13,7 @@ interface ApplicationCardProps {
   onDelete: (id: string) => void;
 }
 
+// Use the application status to highlight the card's current workflow stage.
 const STATUS_BORDER: Record<Status, string> = {
   Applied: "border-t-sky-500",
   Interview: "border-t-amber-500",
@@ -28,6 +29,7 @@ export default function ApplicationCard({
 }: ApplicationCardProps) {
   const [editing, setEditing] = useState(false);
 
+  // Replace the card with a pre-filled form while the application is being edited.
   if (editing) {
     return (
       <div className="rounded-lg bg-white shadow-sm">
@@ -36,6 +38,7 @@ export default function ApplicationCard({
           submitLabel="Save changes"
           stacked
           onSubmit={(values) => {
+            // Save the updated fields and return to the read-only card view.
             onUpdate(application.id, values);
             setEditing(false);
           }}
@@ -45,6 +48,7 @@ export default function ApplicationCard({
     );
   }
 
+  // Parse the date at midnight to avoid timezone shifts when formatting it.
   const formattedDate = application.dateApplied
     ? new Date(`${application.dateApplied}T00:00:00`).toLocaleDateString(
         "en-CA",
@@ -64,6 +68,7 @@ export default function ApplicationCard({
           <p className="text-sm text-neutral-600">{application.role}</p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
+          {/* Open the same card in edit mode without navigating away. */}
           <button
             type="button"
             onClick={() => setEditing(true)}
@@ -71,6 +76,7 @@ export default function ApplicationCard({
           >
             Edit
           </button>
+          {/* Delete this application through the parent board's state handler. */}
           <button
             type="button"
             onClick={() => onDelete(application.id)}
@@ -82,10 +88,12 @@ export default function ApplicationCard({
         </div>
       </div>
 
+      {/* Dates are optional, so omit the row when no date was provided. */}
       {formattedDate && (
         <p className="mt-1 text-xs text-neutral-500">Applied {formattedDate}</p>
       )}
 
+      {/* Open the original job posting in a separate browser tab when available. */}
       {application.jobLink && (
         <a
           href={application.jobLink}
@@ -97,11 +105,13 @@ export default function ApplicationCard({
         </a>
       )}
 
+      {/* Keep the application stage editable directly from the card. */}
       <label className="mt-3 block">
         <span className="sr-only">Move to another stage</span>
         <select
           value={application.status}
           onChange={(event) =>
+            // The options come from STATUSES, so the selected value is a valid status.
             onStatusChange(application.id, event.target.value as Status)
           }
           className="w-full rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-xs outline-none focus:border-indigo-500"
